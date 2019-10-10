@@ -13,7 +13,7 @@ const client_id = "Iv1.de60148e0859c0ba";
 const client_secret = "0bda8d722351c069ed89dfc3ec874ea0f4e1770e";
 
 // change this to fetch repo
-const fetchUsers = async (user, repo) => {
+const fetchPullRequests = async (user, repo) => {
   const api_call = await fetch(`https://api.github.com/repos/${user}/${repo}/pulls?client_id=${client_id}&
     client_secret=${client_secret}`);
 
@@ -23,11 +23,18 @@ const fetchUsers = async (user, repo) => {
 
 // will return PR number which you can use to find commits/comments
 const showData = () => {
-  fetchUsers(userInputValue.value, repoInputValue.value).then(res => {
-    console.log(res, "<-- user data");
+  fetchPullRequests(userInputValue.value, repoInputValue.value).then(res => {
+    const getRequests = () => {
+      res.data.forEach(function(pull) {
+        console.log(pull, "<-- foreach statement");
+      });
+    };
+    console.log(res.data, "<-- user data");
+    console.log(getRequests());
+    // console.log(getComments(), "<--get comments as numbers");
     nameContainer.innerHTML = `Open pull requests: <span class="main__profile-value">${res.data[0].title}</span>`;
     commitsContainer.innerHTML = `# of commits: <span class="main__profile-value">${res.data[0].commits}</span>`;
-    reposContainer.innerHTML = `Comments: <span class="main__profile-value">${res.data.public_repos}</span>`;
+    reposContainer.innerHTML = `# of comments: <span class="main__profile-value">${res.data.public_repos}</span>`;
     unContainer.innerHTML = `Pull request Opened by: <span class="main__profile-value">${res.data[3].user.login}</span>`;
   });
 };
